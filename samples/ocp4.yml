@@ -20,6 +20,7 @@ openshift_mirror: http://mirror.openshift.com/pub/openshift-v4/dependencies/rhco
 dest_ignitions_web_directory: "{{ webserver_directory }}/{{ ocp4_dependencies_version }}/ignitions/"
 webserver_dependencies: "{{ webserver_directory }}/{{ ocp4_dependencies_version }}"
 webserver_images: "{{ webserver_directory }}/{{ ocp4_dependencies_version }}/images"
+rhcos_webserver_img_name: rhcos-webserver
 
 coreos_installer_kernel: "rhcos-{{ ocp4_image_version }}-x86_64-installer-kernel"
 coreos_installer_initramfs: "rhcos-{{ ocp4_image_version }}-x86_64-installer-initramfs.img"

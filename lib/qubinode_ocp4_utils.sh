@@ -17,32 +17,32 @@ function openshift4_prechecks () {
     fi
     openshift4_variables
 
-    #check for pull secret
-    if [ ! -f "${ocp4_pull_secret}" ]
-    then
-        echo "Please download your pull-secret from: "
-        echo "https://cloud.redhat.com/openshift/install/metal/user-provisioned"
-        echo "and save it as ${ocp4_pull_secret}"
-        echo ""
-        exit
-    fi
+    ##check for pull secret
+    #if [ ! -f "${ocp4_pull_secret}" ]
+    #then
+    #    echo "Please download your pull-secret from: "
+    #    echo "https://cloud.redhat.com/openshift/install/metal/user-provisioned"
+    #    echo "and save it as ${ocp4_pull_secret}"
+    #    echo ""
+    #    exit
+    #fi
 
     check_for_required_role openshift-4-loadbalancer
     check_for_required_role swygue.coreos-virt-install-iso
 
     # Ensure firewall rules
-    if ! sudo firewall-cmd --list-ports | grep -q '32700/tcp'
-    then
-        echo "Setting firewall rules"
-        sudo firewall-cmd --add-port={8080/tcp,80/tcp,443/tcp,6443/tcp,22623/tcp,32700/tcp} --permanent
-        sudo firewall-cmd --reload
-    fi
+    #if ! sudo firewall-cmd --list-ports | grep -q '32700/tcp'
+    #then
+    #    echo "Setting firewall rules"
+    #    sudo firewall-cmd --add-port={8080/tcp,80/tcp,443/tcp,6443/tcp,22623/tcp,32700/tcp} --permanent
+    #    sudo firewall-cmd --reload
+    #fi
 
     # Check the openshift version
-    RELEASE_TXT=$(mktemp)
-    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt -o ${RELEASE_TXT}
-    current_version=$(cat "${RELEASE_TXT}" | grep Name:  |  awk '{print $2}')
-    sed -i "s/^ocp4_version:.*/ocp4_version: ${current_version}/"   "${project_dir}/playbooks/vars/ocp4.yml"
+    #RELEASE_TXT=$(mktemp)
+    #curl -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt -o ${RELEASE_TXT}
+    #current_version=$(cat "${RELEASE_TXT}" | grep Name:  |  awk '{print $2}')
+    #sed -i "s/^ocp4_version:.*/ocp4_version: ${current_version}/"   "${project_dir}/playbooks/vars/ocp4.yml"
 
 }
 
@@ -58,7 +58,7 @@ openshift4_qubinode_teardown () {
     test -f $ocp4_vars_file && remove_ocp4_vms
     
     # Delete containers managed by systemd
-    for i in $(echo "lbocp42.service ocp4lb.service $podman_webserver $lb_name")
+    for i in $(echo "qbn-lb-ocp42 qbn-lb openshift-4-loadbalancer lbocp42.service ocp4lb.service $podman_webserver $lb_name")
     do
         if sudo sudo systemctl list-unit-files | grep -q $i
         then
@@ -74,7 +74,7 @@ openshift4_qubinode_teardown () {
 
 
     # Delete the remaining containers and pruge their images
-    containers=(ocp4lb lbocp42 openshift-4-loadbalancer-ocp42 ocp4ignhttpd ignwebserver qbn-httpd)
+    containers=(openshift-4-loadbalancer qbn-lb-ocp42 qbn-lb ocp4lb lbocp42 openshift-4-loadbalancer-ocp42 ocp4ignhttpd ignwebserver qbn-httpd)
     deleted_containers=()
     for pod in ${containers[@]}
     do
