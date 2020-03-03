@@ -1,4 +1,6 @@
 ansible.log
+openshift_nodes
+release.txt
 playbooks/roles/*
 !playbooks/roles/.gitkeep
 playbooks/vars/*
